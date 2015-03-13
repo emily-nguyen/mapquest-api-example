@@ -25,13 +25,26 @@ def main():
         result = [] 
         for j in range(len(location_list)-1):
             url = mapquest_parse.format_url(location_list[j], location_list[j+1])
-            print(url)
-            print()
             json_result = mapquest_parse.get_result(url)
             result.extend(i.generate(json_result))
-        for k in result:
-            print(k)
 
+        if type(i) == mapquest_classes.Steps:
+            print('\nDIRECTIONS')
+            for k in result:
+                print(k)
+        elif type(i) == mapquest_classes.Distance:
+            print('\nTotal Distance: {} miles'.format(int(sum(result)+0.5)))
+        elif type(i) == mapquest_classes.Time:
+            print('\nTotal Time: {} minutes'.format(int(sum(result)/60+0.5)))
+        elif type(i) == mapquest_classes.LatLong:
+            print()
+            for k in range(len(location_list)-2):
+                result.pop(-(k+1))
+            for c in result:
+                print(c[0], c[1])
+    
+    print('\nDirections Courtesy of MapQuest; Map Data Copyright OpenStreetMap Contributors')
+            
 def input_list(n:int)->list:
     '''Returns a list of n locations taken in as input'''
     result = []

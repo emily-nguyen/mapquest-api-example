@@ -46,12 +46,12 @@ def parse_steps(json_result:'json')->list:
 def parse_distance(json_result:'json')->list:
     '''Takes a parsed JSON response and returns the total distance'''
     result = json_result['route']['distance']
-    return [int(result+0.5)]
+    return [result]
 
 def parse_time(json_result:'json')->list:
     '''Takes a parsed JSON response and returns the total time'''
     seconds = json_result['route']['time']
-    return [int(seconds/60+0.5)]
+    return [seconds]
 
 def map_direction(parameter:str, n:float)->str:
     '''Takes in a latitude or longitude value and determines the direction'''
@@ -69,11 +69,11 @@ def parse_latlong(json_result:'json')->list:
     longitude'''
     result = []
     coord = json_result['route']['boundingBox']
-    start_lat = abs(coord['lr']['lat'])
-    start_long = abs(coord['lr']['lng'])
+    start_lat = abs(coord['ul']['lat'])
+    start_long = abs(coord['ul']['lng'])
     result.append((map_direction('lat', start_lat), map_direction('long', start_long)))
-    end_lat = abs(coord['ul']['lat'])
-    end_long = abs(coord['ul']['lng'])
+    end_lat = abs(coord['lr']['lat'])
+    end_long = abs(coord['lr']['lng'])
     result.append((map_direction('lat', end_lat), map_direction('long', end_long)))
     return result
     
