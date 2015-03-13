@@ -3,27 +3,14 @@
 import http.client
 import urllib.request
 import urllib.error
+import urllib.parse 
 
-APP_KEY = 'Fmjtd%7Cluu82luanl%2C72%3Do5-948x04'
-URL = 'http://open.mapquestapi.com/directions/v2/route?key={}&from={}&to={}'
-
-def format_location(location:str)->str:
-    '''Takes a location and formats the string to make it valid'''
-    string = ''
-    loc = location.split()
-    if len(loc) > 1:
-        lst = loc[:-1]
-        for i in lst:
-            string += i + '+'
-        return string + loc[-1]
-    return location 
-
-def format_url(start_loc:str, end_loc:str)->str:
+def format_url(base_url:str, start_loc:str, end_loc:str)->str:
     '''Takes in a start and end location and returns a url string formatted
     with the inputs'''
-    start = format_location(start_loc)
-    end = format_location(end_loc)
-    return URL.format(APP_KEY, start, end)
+    url_encode = urllib.parse.urlencode([('from', start_loc), ('to', end_loc)])
+    return (base_url + url_encode)
+    
 
 def download_url(url:str)->None:
     '''Takes in a url and prints out the contents of the web page'''
