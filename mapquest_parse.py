@@ -33,43 +33,49 @@ def get_result(url:str)->'json':
         if response != None:
             response.close()
 
-def print_steps(json_result:'json')->None:
-    '''Takes a parsed JSON response and prints the directions / steps'''
+def parse_steps(json_result:'json')->list:
+    '''Takes a parsed JSON response and returns a list of the directions /
+    steps'''
+    result = [] 
     step_list = json_result['route']['legs']
     for i in step_list:
         for j in i['maneuvers']:
-            print(j['narrative'])
+            result.append(j['narrative'])
+    return result 
 
-def print_distance(json_result:'json')->None:
-    '''Takes a parsed JSON response and prints the total distance'''
-    print(json_result['route']['distance'])
+def parse_distance(json_result:'json')->list:
+    '''Takes a parsed JSON response and returns the total distance'''
+    result = json_result['route']['distance']
+    return [int(result+0.5)]
 
-def print_time(json_result:'json')->None:
-    '''Takes a parsed JSON response and prints the total time'''
+def parse_time(json_result:'json')->list:
+    '''Takes a parsed JSON response and returns the total time'''
     seconds = json_result['route']['time']
-    print(seconds/60)
+    return [int(seconds/60+0.5)]
 
 def map_direction(parameter:str, n:float)->str:
     '''Takes in a latitude or longitude value and determines the direction'''
     if parameter == 'lat':
         if n <= 90:
-            return '{}N'.format(n)
-        return '{}S'.format(n)
+            return '{0:.2f}N'.format(n)
+        return '{0:.2f}S'.format(n)
     elif parameter == 'long':
         if n <= 90:
-            return '{}E'.format(n)
-        return '{}W'.format(n)
+            return '{0:.2f}E'.format(n)
+        return '{0:.2f}W'.format(n)
 
-def print_latlong(json_result:'json')->None:
-    '''Takes a parsed JSON response and prints the latitude and longitude'''
+def parse_latlong(json_result:'json')->list:
+    '''Takes a parsed JSON response and returns a list of the latitude and
+    longitude'''
+    result = []
     coord = json_result['route']['boundingBox']
     start_lat = abs(coord['lr']['lat'])
     start_long = abs(coord['lr']['lng'])
-    print(map_direction('lat', start_lat), map_direction('long', start_long))
+    result.append((map_direction('lat', start_lat), map_direction('long', start_long)))
     end_lat = abs(coord['ul']['lat'])
     end_long = abs(coord['ul']['lng'])
-    print(map_direction('lat', end_lat), map_direction('long', end_long))
-    
+    result.append((map_direction('lat', end_lat), map_direction('long', end_long)))
+    return result
     
     
             
